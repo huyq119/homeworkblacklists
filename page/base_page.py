@@ -1,3 +1,5 @@
+from time import sleep
+
 import yaml
 from appium.webdriver.common.mobileby import MobileBy
 from appium.webdriver.webdriver import WebDriver
@@ -5,39 +7,36 @@ from appium.webdriver.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
+from page.handle_black import handle_black
+
 
 class BasePage():
     _driver: WebDriver = None
-    _black_list = [(MobileBy.ID, "iv_close")]
 
     def __init__(self, driver: WebDriver = None):
         self._driver = driver
 
-    def find(self, locator, value):
-        try:
-            element = self._driver.find_element(locator, value)
-            locator1 = (locator, value)
-            WebDriverWait(self._driver, 2).until(expected_conditions.element_to_be_clickable(locator1))
-            return element
-        except Exception:
-            for black in self._black_list:
-                elements = self._driver.find_elements(*black)
-                if len(elements) > 0:
-                    elements[0].click()
-                    break
-            return self.find(locator, value)
+    @handle_black
+    def find(self, locator):
+        sleep(3)
+        element = self._driver.find_element(*locator)
+        WebDriverWait(self._driver, 2).until(expected_conditions.element_to_be_clickable(locator))
+        return element
 
-    def steps(self, path):
-        with open(path) as f:
-            _steps = yaml.safe_load(f)
-        for _step in _steps:
-            if "by" in _step.keys():
-                _element = self.find(_step["by"], _step["locator"])
-            if "action" in _step.keys():
-                _action = _step["action"]
-                if _action == "click":
-                    _element.click()
-                if _action == "send_keys":
-                    _element.send_keys(_step["value"])
+    def get_text(self, locator):
+        text = self.find(locator).text
+        return text
 
-        return self
+    def find_click(self, locator):
+        return self.find(locator).click()
+
+    def find_sendkeys(self, locator, text):
+        return self.find(locator).send_keys(text)
+
+    def roll_click(self, text):
+        element = (MobileBy.ANDROID_UIAUTOMATOR,
+                   'new UiScrollable(new UiSelector().'
+                   'scrollable(true).instance(0)).'
+                   'scrollIntoView(new UiSelector().'
+                   f'text("{text}").instance(0));')
+        return self.find_click(element)

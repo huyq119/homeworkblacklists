@@ -10,11 +10,11 @@ import page.contacts
 class Add_Contact_Option(BasePage):
 
     def goto_add_contact(self):
-        self.find(MobileBy.ID, "com.tencent.wework:id/csn").click()
+        self.find_click((MobileBy.ID, "com.tencent.wework:id/csn"))
         return Add_Contact(self._driver)
 
     def goto_contacts_new(self):
-        self.find(MobileBy.ID, "com.tencent.wework:id/idp").click()
+        self.find_click((MobileBy.ID, "com.tencent.wework:id/idp"))
         return page.contacts.Contacts(self._driver)
 
     def get_toast(self):

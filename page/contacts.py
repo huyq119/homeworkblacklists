@@ -15,11 +15,7 @@ class Contacts(BasePage):
         滑动查找元素
         :return:
         """
-        self._driver.find_element(MobileBy.ANDROID_UIAUTOMATOR,
-                                  'new UiScrollable(new UiSelector().'
-                                  'scrollable(true).instance(0)).'
-                                  'scrollIntoView(new UiSelector().'
-                                  'text("添加成员").instance(0));').click()
+        self.roll_click("添加成员")
         return Add_Contact_Option(self._driver)
 
     def get_name_list(self):

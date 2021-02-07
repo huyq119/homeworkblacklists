@@ -8,5 +8,5 @@ from page.contacts import Contacts
 class Main(BasePage):
 
     def goto_contacts(self):
-        self.find(MobileBy.XPATH, "//*[@resource-id='com.tencent.wework:id/elq' and @text = '通讯录']").click()
+        self.find_click((MobileBy.XPATH, "//*[@resource-id='com.tencent.wework:id/elq' and @text = '通讯录']"))
         return Contacts(self._driver)
